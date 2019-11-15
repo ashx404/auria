@@ -9,7 +9,7 @@ module.exports.sendapival = (req, res) => {
     // *****COUNTRY**********
     let countryData;
     try {
-      let countryUrl = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=e46770635aa44ffbbdf6807b600b344d`;
+      let countryUrl = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=`;
       countryData = await axios.get(countryUrl);
       countryData =
         countryData["data"]["results"]["0"]["components"]["country"];
@@ -26,7 +26,7 @@ module.exports.sendapival = (req, res) => {
         `https://api.kbgeo.com/coastal-distance/v2/coord?lat=${lat}&lng=${lon}`,
         {
           params: {},
-          headers: { "kb-auth-token": "50a1f7e7-1fad-4cdf-9a03-ccc003c0e008" }
+          headers: { "kb-auth-token": "" }
         }
       );
       distFromSea = seaData["data"]["distanceInMiles"] * 1.6; //in km
@@ -65,7 +65,7 @@ module.exports.sendapival = (req, res) => {
     //*****
     // *******TEMP AND RAINFALL*********
     let rainData = await axios.get(
-      `https://api.darksky.net/forecast/26627e161e652e96152956f588621c52/${lat},${lon}`
+      `https://api.darksky.net/forecast/{apikey}/${lat},${lon}`
     );
     let currTemp = rainData["data"]["currently"]["temperature"];
     let precipIntensity = rainData["data"]["currently"]["precipIntensity"];
@@ -73,11 +73,9 @@ module.exports.sendapival = (req, res) => {
 
     console.log("precipIntensity  " + precipIntensity);
     console.log("currTemp  " + currTemp);
+   
 
-    // let TEMP = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&APPID=e22c5633dc0e79e6fe9dc29dd57e51e4`);
-    // console.log(TEMP["data"]["main"]["temp"]);
-    // let terrain = await axios.get(`https://maps.googleapis.com/maps/api/elevation/json?locations=${lat},${lon}&units=metric&key=AIzaSyDcnHYgcC-bKhg4sIumw-FooUjSHMBFods`);
-    // console.log(terrain["data"]["results"][0]["elevation"]);
+    //z3r0
   }
   findWeather();
 
