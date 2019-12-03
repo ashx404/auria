@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/components/Home";
 import GMap from "@/components/GMap";
+import br from "@/components/br";
 Vue.use(Router);
 
 export default new Router({
@@ -15,6 +16,11 @@ export default new Router({
       path: "/music/:place/:lat/:lon",
       name: "GMap",
       component: GMap
+    },
+    {
+      path: "/c",
+      name: "br",
+      component: br
     }
   ]
 });
