@@ -1,8 +1,6 @@
 const fs = require("fs");
 const axios = require("axios");
 
-let lat = 28.7;
-let lon = 77.1;
 let temp, water, humidity, elevation;
 
 let tempVal;
