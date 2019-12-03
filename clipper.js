@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 
 
 //Making music caller
-makeMusic(1, 1, 1);
+makeMusic(7, 1, 3);
 
 function getAPI(param) {
   var pick = Math.floor(Math.random() * param);
@@ -33,14 +33,13 @@ function getAPI(param) {
   return pick;
 }
 
+//console.log(scribble.getChordsByProgression("C5 Minor", "I V vi III"))
 
 function makeMusic(sChoose, mChoose, pChoose) {
-  if (sChoose == 1 || sChoose == 2 || sChoose == 5) 
-    sChoose = 0;
+  // if (sChoose == 1 || sChoose == 2 || sChoose == 5) 
+  //   sChoose = 0;
   console.log("Music Parameter Code: " + sChoose + mChoose + pChoose);
   var notes = [];
-  // console.log("NOTES");
-  // console.log(notes);
   var chords = [];
   let pattern = "";
   let cpattern = "";
@@ -48,6 +47,7 @@ function makeMusic(sChoose, mChoose, pChoose) {
   var finalProgression = getProgression(pChoose);
   console.log("Final Chord: " + finalChord);
   finalProgression.forEach(element => {
+    console.log("Elem: " + element)
     chords.push(scribble.getChordsByProgression(finalChord, element));
     console.log(
       "in pusher: " + scribble.getChordsByProgression(finalChord, element)
@@ -103,7 +103,7 @@ function makeMusic(sChoose, mChoose, pChoose) {
     }
     //Nostalgic Pop?
     if (value == 3) {
-      progression[0] = " I V vi iii ";
+      progression[0] = "I V vi iii";
       progression[1] = "IV I IV V";
     }
     console.log("prog: " + progression);
@@ -165,8 +165,6 @@ function makeMusic(sChoose, mChoose, pChoose) {
     console.log(flute);
     return flute;
   }
-
-  //getFlute(0)
 
   function shuffle(array) {
     var currentIndex = array.length,
