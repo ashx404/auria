@@ -5,22 +5,27 @@ const express = require("express");
 const app = express();
 var cors = require("cors");
 var bodyParser = require("body-parser");
+var series = require("async/series");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.post("/p", (req, res) => {
-  //console.log(req)
-  // makeMusic(7,0,0);
-  console.log(req);
-  // makeMusic(7,0,0)
-  sChoose = getAPI(6);
-  pChoose = getAPI(2);
-  res.send("hoho");
-  makeMusic(sChoose, 1, pChoose);
-});
+// app.post("/p", (req, res) => {
+//   //console.log(req)
+//   // makeMusic(7,0,0);
+//   console.log(req);
+//   // makeMusic(7,0,0)
+//   sChoose = getAPI(6);
+//   pChoose = getAPI(2);
+//   res.send("hoho");
+//   makeMusic(sChoose, 1, pChoose);
+// });
 
 //Send Chord Scale, Major/minor, progression
+
+
+//Making music caller
+makeMusic(1, 1, 1);
 
 function getAPI(param) {
   var pick = Math.floor(Math.random() * param);
@@ -28,13 +33,14 @@ function getAPI(param) {
   return pick;
 }
 
+
 function makeMusic(sChoose, mChoose, pChoose) {
-  if (sChoose == 1 || sChoose == 2 || sChoose == 5) sChoose = 0;
-  console.log();
-  console.log("AAAAA" + sChoose + mChoose + pChoose);
+  if (sChoose == 1 || sChoose == 2 || sChoose == 5) 
+    sChoose = 0;
+  console.log("Music Parameter Code: " + sChoose + mChoose + pChoose);
   var notes = [];
-  console.log("NODES");
-  console.log(notes);
+  // console.log("NOTES");
+  // console.log(notes);
   var chords = [];
   let pattern = "";
   let cpattern = "";
@@ -128,24 +134,25 @@ function makeMusic(sChoose, mChoose, pChoose) {
     if (value == 0) return "minor";
   }
 
-  // function changer() {
-  //     var arnotes = ['C', 'D', 'E', 'F','G','A','B','C']
-  //     var nutu = []
-  //     console.log("NOTES")
-  //     console.log(notes)
-  //     notes.forEach(element => {
-  //         var key = element.split("",2)
-  //         console.log("key: "+key)
-  //         if(key[1] == '#'){
-  //             key[1] = 'b'
-  //             for(var i=0; i<arnotes.length; i++) {
-  //                 if(key[0] == arnotes[i])
-  //                     key[0] = arnotes[i+1]
-  //             }
-  //         }
-  //         nutu.push(key)
-  //         console.log(nutu)
-  //     });
+  function changer() {
+      var arnotes = ['C', 'D', 'E', 'F','G','A','B','C']
+      var nutu = []
+      console.log("NOTES")
+      console.log(notes)
+      notes.forEach(element => {
+          var key = element.split("",2)
+          console.log("key: "+key)
+          if(key[1] == '#'){
+              key[1] = 'b'
+              for(var i=0; i<arnotes.length; i++) {
+                  if(key[0] == arnotes[i])
+                      key[0] = arnotes[i+1]
+              }
+          }
+          nutu.push(key)
+          console.log(nutu)
+      });
+    }
 
   function getFlute(value) {
     var flute = [];
@@ -196,7 +203,7 @@ function makeMusic(sChoose, mChoose, pChoose) {
   }
 
   function clipper(sChoose, mChoose, pChoose) {
-    //  changer ()
+    changer ()
     const playNotes = scribble.clip({
       notes: notes,
       pattern: pattern
@@ -233,7 +240,6 @@ function makeMusic(sChoose, mChoose, pChoose) {
     scribble.midi(playCoolRythm, "cool.mid");
   }
 
-  mixer();
   function splitter(arr, oct) {
     var arry = [];
     arr.forEach(element => {
@@ -243,61 +249,75 @@ function makeMusic(sChoose, mChoose, pChoose) {
     return arry;
   }
 
-  function mixer() {
-    var midi = MidiConvert.create();
+  var midi = MidiConvert.create();
 
-    fs.readFile("base.mid", "binary", function(err, midiBlob) {
-      if (!err) {
-        let x = MidiConvert.parse(midiBlob);
-        console.log("BAS:");
-        console.log(x);
-        x.tracks[0].patch(32);
-
-        midi.tracks.push(x.tracks[0]);
-        console.log(midi);
+  series(
+    [
+      function(callback) {
+        fs.readFile("base.mid", "binary", function(err, midiBlob) {
+          if (!err) {
+            let x = MidiConvert.parse(midiBlob);
+            console.log("BAS:");
+            console.log(x);
+            x.tracks[0].patch(32);
+            x.tracks[0].name = "Bass";
+            midi.tracks.push(x.tracks[0]);
+            console.log("written base");
+            callback(null, "one");
+          }
+        });
+      },
+      function(callback) {
+        fs.readFile("cool.mid", "binary", function(err, midiBlob) {
+          if (!err) {
+            let x = MidiConvert.parse(midiBlob);
+            x.tracks[0].patch(0);
+            x.tracks[0].channelNumber = 4;
+            x.tracks[0].id = 4;
+            x.tracks[0].name = "Cool";
+            midi.tracks.push(x.tracks[0]);
+            console.log("written cool");
+            callback(null, "two");
+          }
+        });
+      },
+      function(callback) {
+        fs.readFile("chord.mid", "binary", function(err, midiBlob) {
+          if (!err) {
+            let x = MidiConvert.parse(midiBlob);
+            x.tracks[0].patch(0);
+            x.tracks[0].channelNumber = 2;
+            x.tracks[0].id = 2;
+            x.tracks[0].name = "Chords";
+            midi.tracks.push(x.tracks[0]);
+            console.log("written chords");
+            callback(null, "three");
+          }
+        });
+      },
+      function(callback) {
+        fs.readFile("flute.mid", "binary", function(err, midiBlob) {
+          if (!err) {
+            let x = MidiConvert.parse(midiBlob);
+            x.tracks[0].patch(75);
+            x.tracks[0].channelNumber = 3;
+            x.tracks[0].id = 3;
+            x.tracks[0].name = "Flute";
+            midi.tracks.push(x.tracks[0]);
+            console.log("written flute");
+            callback(null, "four");
+          }
+        });
       }
-    });
-
-    fs.readFile("cool.mid", "binary", function(err, midiBlob) {
-      if (!err) {
-        let x = MidiConvert.parse(midiBlob);
-        x.tracks[0].patch(0);
-        x.tracks[0].channelNumber = 4;
-        x.tracks[0].id = 4;
-        x.tracks[0].name = "GOD";
-
-        midi.tracks.push(x.tracks[0]);
-        console.log(midi);
-      }
-    });
-
-    fs.readFile("chord.mid", "binary", function(err, midiBlob) {
-      if (!err) {
-        let x = MidiConvert.parse(midiBlob);
-        x.tracks[0].patch(0);
-        x.tracks[0].channelNumber = 2;
-        x.tracks[0].id = 2;
-
-        midi.tracks.push(x.tracks[0]);
-        console.log(midi);
-      }
-    });
-
-    fs.readFile("flute.mid", "binary", function(err, midiBlob) {
-      if (!err) {
-        let x = MidiConvert.parse(midiBlob);
-        x.tracks[0].patch(75);
-        x.tracks[0].channelNumber = 3;
-        x.tracks[0].id = 3;
-
-        midi.tracks.push(x.tracks[0]);
-        console.log(midi);
-        fs.writeFileSync("ANS.mid", midi.encode(), "binary");
-      }
-    });
-    console.log("MIDI");
-    console.log(midi);
-  }
+    ],
+    function(err, results) {
+      console.log("REs" + results);
+      console.log("Miniiii:");
+      console.log(midi);
+      fs.writeFileSync("ANS.mid", midi.encode(), "binary");
+      console.log("Written");
+    }
+  );
 }
 
 app.listen(7676, (req, res) => {
