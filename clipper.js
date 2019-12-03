@@ -187,27 +187,41 @@ function makeMusic(sChoose, mChoose, pChoose) {
     }
 
     var getOc = [];
+    var getCh0 = [];
     var choose;
     for (var i = 0; i < getCh.length; i++) {
-      getOc.push(getCh[i].split("")[1]);
-      getCh[i] = getCh[i].split("")[0];
+      getOc.push(getCh[i].split("")[getCh[i].length-1]);
+      if(getCh[i].length == 3) {
+        getCh0 = getCh[i].split("")[1]
+        getCh[i] = getCh[i].split("")[0] + getCh0;
+        console.log("Getter: " + getCh[i])
+      }
+      else {
+        getCh[i] = getCh[i].split("")[0];
+        console.log("Getter: " + getCh[i])
+      }
+      
+     
       if (value == "0") choose = "m";
       else choose = "M";
       getCh[i] += choose + "-" + (getOc[i] - 1);
     }
     console.log("PlayCH: " + getCh);
     console.log("PlayCH length: " + getCh.length);
+    console.log("GetOC " + getOc)
     return getCh;
   }
 
   function clipper(sChoose, mChoose, pChoose) {
     changer ()
+    console.log("FInal Notes: " + notes)
     const playNotes = scribble.clip({
       notes: notes,
       pattern: pattern
       // subdiv: '32n'
     });
     pcl = playChords(mChoose).length;
+
 
     const playchords = scribble.clip({
       notes: playChords(mChoose),
