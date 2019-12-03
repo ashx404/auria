@@ -187,7 +187,7 @@ function makeMusic(sChoose, mChoose, pChoose) {
     }
 
     var getOc = [];
-    var getCh0 = [];
+    var getCh0;
     var choose;
     for (var i = 0; i < getCh.length; i++) {
       getOc.push(getCh[i].split("")[getCh[i].length-1]);
