@@ -1,52 +1,50 @@
 <template>
-  <div class="over">
+  <div>
     <div v-if="show === true" class="spinner">
       <div class="double-bounce1"></div>
       <div class="double-bounce2"></div>
     </div>
-
     <transition
       name="custom-classes-transition"
       enter-active-class="animated tada"
       leave-active-class="animated bounceOutRight"
     >
-      <div class="map" v-bind:style="styleObject">
+      <div class="map over" v-bind:style="styleObject">
         <div class="google-map" id="map"></div>
+        <PlayButton v-if="show === false" class="play" />
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import PlayButton from "@/components/PlayButton";
 import axios from "axios";
 export default {
   name: "GMap",
   data() {
     return {
+      show: true,
       styleObject: {
-        opacity: "80%",
-        color: "gray",
-        show: true
+        opacity: "20%"
       }
     };
   },
+  components: {
+    PlayButton
+  },
   methods: {
     renderMap(a, b, c) {
-      let self = this;
       axios
         .post("http://localhost:3000/t", {
           lat: this.$route.params.lat,
           lon: this.$route.params.lon
         })
         .then(res => {
-          alert("Hi");
-          function sayHi() {
-            self.show = false;
-            self.color = undefined;
-            self.opacity = 0;
-          }
-
-          setTimeout(sayHi, 1000);
+          setTimeout(() => {
+            this.show = false;
+            this.styleObject.opacity = "80%";
+          }, 3000);
         });
       var myLatLng = { lat: parseFloat(a), lng: parseFloat(b) };
 
@@ -61,6 +59,7 @@ export default {
       var marker = new google.maps.Marker({
         position: myLatLng,
         map: map,
+        icon: "https://i.imgur.com/gLQyKYH.png",
         animation: google.maps.Animation.DROP,
         title: c + " " + a + "," + b
       });
@@ -77,13 +76,15 @@ export default {
 </script>
 <style>
 @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css";
+
 .btn {
   z-index: 1;
 }
+
 .google-map {
-  width: 100%;
   height: 100%;
-  margin: 0 auto;
+  width: 100%;
+  margin: auto;
   background: #fff;
   position: absolute;
   top: 0;

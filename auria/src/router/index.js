@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "@/components/Home";
 import GMap from "@/components/GMap";
-import br from "@/components/br";
+import x from "@/components/x";
 Vue.use(Router);
 
 export default new Router({
@@ -18,9 +18,9 @@ export default new Router({
       component: GMap
     },
     {
-      path: "/c",
-      name: "br",
-      component: br
+      path: "/x",
+      name: "x",
+      component: x
     }
   ]
 });
