@@ -10,13 +10,15 @@
       leave-active-class="animated bounceOutRight"
     >
       <div class="map over" v-bind:style="styleObject">
-        <div class="google-map" id="map"></div>
-        <PlayButton v-if="show === false" class="play" />
+        <div class="google-map" id="map"></div><PlayButton v-if="show === false" class="play" @click=" MIDIjs.play("../../static/midi/ANS.mid")" />
+        <button
+          @click="bruh()"
+        >DABAO</button>
       </div>
     </transition>
   </div>
 </template>
-
+<script type="text/javascript" src="//www.midijs.net/lib/midi.js"></script>
 <script>
 import PlayButton from "@/components/PlayButton";
 import axios from "axios";
@@ -63,6 +65,10 @@ export default {
         animation: google.maps.Animation.DROP,
         title: c + " " + a + "," + b
       });
+    },
+    bruh() {
+      
+      MIDIjs.play("../../static/midi/ANS.mid");
     }
   },
   mounted() {

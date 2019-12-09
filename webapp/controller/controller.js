@@ -396,8 +396,10 @@ function makeMusic(sChoose, mChoose, pChoose, res) {
       console.log("REs" + results);
       console.log("Miniiii:");
       console.log(midi);
-      fs.writeFileSync("ANS.mid", midi.encode(), "binary");
+      fs.writeFileSync("./dist/static/midi/ANS.mid", midi.encode(), "binary");
+
       console.log("Written");
+      console.log("Music Parameter Code: " + sChoose + mChoose + pChoose);
     }
   );
 }
